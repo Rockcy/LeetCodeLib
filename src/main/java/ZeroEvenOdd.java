@@ -1,12 +1,10 @@
+import java.util.Scanner;
 import java.util.function.IntConsumer;
 
 public class ZeroEvenOdd {
     private int n;
-    private int i = 0;
-    private int num = 0;
-    // private byte[] lock = new byte[0];
     private boolean ifZeroDone = false;
-    private boolean ifOddDone = false;
+    private boolean ifOddEvenDone = false;
 
     public ZeroEvenOdd(int n) {
         this.n = n;
@@ -14,52 +12,90 @@ public class ZeroEvenOdd {
 
     // printNumber.accept(x) outputs "x", where x is an integer.
     public void zero(IntConsumer printNumber) throws InterruptedException {
-        for (int i1 = 0; i1 < n; i1++) {
-            synchronized (this) {
-                while (num % 2 != 0 || ifZeroDone) {
+
+        synchronized (this) {
+            for (int i = 0; i < n; i++){
+                while (ifZeroDone) {
                     this.wait();
                 }
                 printNumber.accept(0);
-                ifZeroDone = true;
-                num++;
                 this.notifyAll();
+                ifZeroDone = true;
             }
         }
 
     }
 
     public void even(IntConsumer printNumber) throws InterruptedException {
-        for (int i1 = 0; i1 < n; i1++) {
-            synchronized (this) {
-                while (num % 2 == 0 || !ifOddDone) {
+        synchronized (this) {
+            for (int i = 2; i <= n; i+=2) {
+                while (!ifZeroDone || !ifOddEvenDone) {
                     this.wait();
                 }
-                i++;
                 printNumber.accept(i);
-                num++;
-                ifOddDone = false;
+                ifOddEvenDone = false;
                 ifZeroDone = false;
                 this.notifyAll();
             }
         }
 
     }
+
     public void odd(IntConsumer printNumber) throws InterruptedException {
-        for (int i1 = 0; i1 < n; i1++) {
 
-            synchronized (this) {
-                while (num % 2 == 0 || !ifZeroDone) {
+
+        synchronized (this) {
+            for (int i = 1; i <= n; i+=2) {
+                while (ifOddEvenDone || !ifZeroDone) {
                     this.wait();
                 }
-                i++;
                 printNumber.accept(i);
-                ifOddDone = true;
-                ifZeroDone = false;
-                num++;
                 this.notifyAll();
+                ifOddEvenDone = true;
+                ifZeroDone = false;
             }
         }
     }
 
-
+    public static void main(String[] args) {
+        try {
+            Scanner scanner = new Scanner(System.in);
+            int input = scanner.nextInt();
+            System.out.println("传入n: " + input);
+            ZeroEvenOdd zeroEvenOdd = new ZeroEvenOdd(input);
+            IntConsumer intConsumer = value -> System.out.println(value);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        zeroEvenOdd.zero(intConsumer);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        zeroEvenOdd.odd(intConsumer);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        zeroEvenOdd.even(intConsumer);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
