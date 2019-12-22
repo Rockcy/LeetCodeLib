@@ -1,3 +1,5 @@
+package multithread;
+
 public class FooBar {
     private int n;
     private boolean ifFooDone = false;

@@ -1,3 +1,5 @@
+package multithread;
+
 import java.util.Scanner;
 import java.util.function.IntConsumer;
 
