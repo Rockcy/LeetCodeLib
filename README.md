@@ -1,2 +1,3 @@
 # LeetCodeLib
-一起刷题：）
+let's solve the questions in LeetCode.
+
