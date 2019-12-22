@@ -1,2 +1,3 @@
 # LeetCodeLib
-let's solve the codes' questions.
+let's solve the questions in LeetCode.
+
