@@ -1,3 +1,5 @@
+package multithread;
+
 public class Foo {
 
     public Foo() {
