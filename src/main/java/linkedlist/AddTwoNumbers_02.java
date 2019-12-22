@@ -8,14 +8,6 @@ package linkedlist;
  * https://leetcode-cn.com/problems/add-two-numbers/
  */
 public class AddTwoNumbers_02 {
-    public static class ListNode {
-        int val;
-        ListNode next;
-
-        ListNode(int x) {
-            val = x;
-        }
-    }
 
     public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
         ListNode curr = new ListNode(0);
